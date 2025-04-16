@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keuangan Komisi Musik Gereja</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    <header>
+  <img src="logo.png" alt="Logo GPdI" style="height: 80px; margin-bottom: 10px;">
+  <h1>Keuangan Komisi Musik Gereja</h1>
+  <p>Data real-time dari Google Spreadsheet</p>
+</header>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Keuangan Komisi Musik Gereja</h1>
+      <p>Data real-time dari Google Spreadsheet</p>
+    </header>
+
+    <div class="saldo" id="saldo-akhir">Saldo akhir: ...</div>
+
+    <table id="data-table">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTHsAtieLHmf06uUmQHirixGifO2pziJ4SMOdL_RJ9NXr3JtAf6Nq3Gvua0v4TntQn0e_1uhXI7MYD/pub?output=csv";
+
+    fetch(csvUrl)
+      .then(res => res.text())
+      .then(data => {
+        const rows = data.split("\n").map(row => row.split(","));
+        const tableHead = document.querySelector("#data-table thead");
+        const tableBody = document.querySelector("#data-table tbody");
+
+        // Buat header
+        tableHead.innerHTML = "<tr>" + rows[0].map(cell => `<th>${cell}</th>`).join("") + "</tr>";
+
+        // Buat isi data
+        rows.slice(1).forEach(row => {
+          const rowHTML = "<tr>" + row.map(cell => `<td>${cell}</td>`).join("") + "</tr>";
+          tableBody.innerHTML += rowHTML;
+        });
+
+        // Ambil saldo terakhir dari kolom terakhir baris terakhir
+        const lastRow = rows[rows.length - 1];
+        const lastSaldo = lastRow[lastRow.length - 1];
+        if (lastSaldo) {
+          document.getElementById("saldo-akhir").textContent = "Saldo akhir: " + lastSaldo;
+        }
+      });
+  </script>
+</body>
+</html>
